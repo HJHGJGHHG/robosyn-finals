@@ -27,7 +27,7 @@ python policy/download_checkpoints.py
 python policy/download_checkpoints.py --verify-only
 ```
 
-All ten tasks use the same dependency list. The tested loading environment uses Python 3.11.15, PyTorch 2.10.0+cu128, torchvision 0.25.0+cu128, NumPy 2.2.6, and PyYAML 6.0.3. Downloading all checkpoints requires approximately 2.08 GB. Downloads are public and require no access token. The downloader pins each HF commit and checks SHA256 before installing it at `policy/<task>/checkpoint/best.pt`.
+All ten tasks use the same dependency list. The tested loading environment uses Python 3.11.15, PyTorch 2.10.0+cu128, torchvision 0.25.0+cu128, NumPy 2.2.6, and PyYAML 6.0.3. Downloading all checkpoints requires approximately 2.25 GB. Downloads are public and require no access token. The downloader pins each HF commit and checks SHA256 before installing it at `policy/<task>/checkpoint/best.pt`.
 
 To download only one task:
 
@@ -50,7 +50,7 @@ Run commands are executed from the official RoboSynChallenge repository root aft
 | `items_handover` | `policy/items_handover` | [HJHGJGHHG/robosyn-items_handover](https://huggingface.co/HJHGJGHHG/robosyn-items_handover/tree/e5b7657f234a0a16c6c3da2c066276dd7d137c32) | `bash policy/items_handover/eval.sh 0 random` | `setting=random`, `gpu_id=0`, `pytorch_device=cuda:0`; set by launcher |
 | `manipulate_pipette` | `policy/manipulate_pipette` | [HJHGJGHHG/robosyn-manipulate_pipette](https://huggingface.co/HJHGJGHHG/robosyn-manipulate_pipette/tree/87c55a676232223271a68f694db04a4bd408a8fb) | `bash policy/manipulate_pipette/eval.sh 0 random` | `setting=random`, `gpu_id=0`, `pytorch_device=cuda:0`; set by launcher |
 | `mixer_operating` | `policy/mixer_operating` | [HJHGJGHHG/robosyn-mixer_operating](https://huggingface.co/HJHGJGHHG/robosyn-mixer_operating/tree/0ed9608b56334bbe52ef4155397fc5b0d8231f1b) | `bash policy/mixer_operating/eval.sh 0 random` | `setting=random`, `gpu_id=0`, `pytorch_device=cuda:0`; set by launcher |
-| `sample_loading` | `policy/sample_loading` | [HJHGJGHHG/robosyn-sample_loading](https://huggingface.co/HJHGJGHHG/robosyn-sample_loading/tree/db00bc37e2461a746a2d32910af685c6d64df422) | `bash policy/sample_loading/eval.sh 0 random` | `setting=random`, `gpu_id=0`, `pytorch_device=cuda:0`; set by launcher |
+| `sample_loading` | `policy/sample_loading` | [HJHGJGHHG/robosyn-sample_loading](https://huggingface.co/HJHGJGHHG/robosyn-sample_loading/tree/4581ebfa6b36d9eeddeb9ac9d3f0a80b2bcbd8ed) | `bash policy/sample_loading/eval.sh 0 random` | `setting=random`, `gpu_id=0`, `pytorch_device=cuda:0`; set by launcher |
 | `table_rearrangement` | `policy/table_rearrangement` | [HJHGJGHHG/robosyn-table_rearrangement](https://huggingface.co/HJHGJGHHG/robosyn-table_rearrangement/tree/58406ffecbcafbb703ec391759ed7c4f036cb69d) | `bash policy/table_rearrangement/eval.sh 0 random` | `setting=random`, `gpu_id=0`, `pytorch_device=cuda:0`; set by launcher |
 | `water_pouring` | `policy/water_pouring` | [HJHGJGHHG/robosyn-water_pouring](https://huggingface.co/HJHGJGHHG/robosyn-water_pouring/tree/076b4e6d288398e08bc94b3c87a46023172eee02) | `bash policy/water_pouring/eval.sh 0 random` | `setting=random`, `gpu_id=0`, `pytorch_device=cuda:0`; set by launcher |
 
@@ -92,7 +92,7 @@ The initial predictions parameterize the task template. Drawer additionally uses
 | `items_handover` | `e5b7657f234a0a16c6c3da2c066276dd7d137c32` | `081dd60fea973d4d4fdcea4e84ba9714e1dd3b207037f30ead395c42cc184cb8` |
 | `manipulate_pipette` | `87c55a676232223271a68f694db04a4bd408a8fb` | `035f67916b37acb691c76a9c28fa811fff0e88c245d8801b1fc940cbc2a8ce41` |
 | `mixer_operating` | `0ed9608b56334bbe52ef4155397fc5b0d8231f1b` | `d4c4da04d533066afa915c63e65e2f5d7c38b172b40aa42bedef1d17a4aef328` |
-| `sample_loading` | `db00bc37e2461a746a2d32910af685c6d64df422` | `fa2240b33ac7517021db8ce97972b8d339cd64e4f403da71637373bbe0398814` |
+| `sample_loading` | `4581ebfa6b36d9eeddeb9ac9d3f0a80b2bcbd8ed` | `81533b46e6ab5a9d223daa7da2596937e17fa0a3056d0456531312e0cbd29834` |
 | `table_rearrangement` | `58406ffecbcafbb703ec391759ed7c4f036cb69d` | `5648df69c6ce03f08928c0c49ea303433483ebd192b9e37b5e6a5e5ea097f982` |
 | `water_pouring` | `076b4e6d288398e08bc94b3c87a46023172eee02` | `a5469e7d1a2459075974f94420e554bf023c49d16d135912787ca6a4a64bc173` |
 

@@ -363,12 +363,12 @@
       "policy_directory": "policy/sample_loading",
       "hf_repo_id": "HJHGJGHHG/robosyn-sample_loading",
       "hf_url": "https://huggingface.co/HJHGJGHHG/robosyn-sample_loading",
-      "hf_revision": "db00bc37e2461a746a2d32910af685c6d64df422",
+      "hf_revision": "4581ebfa6b36d9eeddeb9ac9d3f0a80b2bcbd8ed",
       "hf_subdirectory": ".",
       "hf_filename": "best.pt",
       "checkpoint_path": "policy/sample_loading/checkpoint/best.pt",
-      "checkpoint_sha256": "fa2240b33ac7517021db8ce97972b8d339cd64e4f403da71637373bbe0398814",
-      "checkpoint_bytes": 110911053,
+      "checkpoint_sha256": "81533b46e6ab5a9d223daa7da2596937e17fa0a3056d0456531312e0cbd29834",
+      "checkpoint_bytes": 285273374,
       "config_file": "policy/sample_loading/deploy_policy.yml",
       "run_command": "bash policy/sample_loading/eval.sh 0 random",
       "configuration_overrides": {
@@ -381,7 +381,7 @@
         "policy_name": "sample_loading",
         "task_name": "sample_loading",
         "setting": "random",
-        "model_name": "sample_loading_v57_f1_c0",
+        "model_name": "sample_loading_v57_targetvar_full50_c0",
         "seed": 161803,
         "max_episodes": 20,
         "max_steps": 1000,
@@ -399,7 +399,7 @@
         "eval_reset_sync_steps": 100,
         "eval_expert_check": false,
         "checkpoint_path": "checkpoint/best.pt",
-        "checkpoint_sha256": "fa2240b33ac7517021db8ce97972b8d339cd64e4f403da71637373bbe0398814",
+        "checkpoint_sha256": "81533b46e6ab5a9d223daa7da2596937e17fa0a3056d0456531312e0cbd29834",
         "geometry_path": "geometry_config.json",
         "template": "nominal_v1",
         "settle_steps": 25,
@@ -407,7 +407,7 @@
         "transport_steps": 40,
         "right_repair_enabled": true
       },
-      "hf_revision_url": "https://huggingface.co/HJHGJGHHG/robosyn-sample_loading/tree/db00bc37e2461a746a2d32910af685c6d64df422",
+      "hf_revision_url": "https://huggingface.co/HJHGJGHHG/robosyn-sample_loading/tree/4581ebfa6b36d9eeddeb9ac9d3f0a80b2bcbd8ed",
       "checkpoint_status": "published"
     },
     {

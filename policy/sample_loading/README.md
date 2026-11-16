@@ -1,6 +1,6 @@
 # sample_loading
 
-Initial RGB perception and template-based planning for RoboSynChallenge.
+Initial RGB perception and template-based planning for RoboSynChallenge. The deployed checkpoint is `sample_loading_targetvar_full50_20261116.pt` (50 fine-tuning epochs), downloaded as `checkpoint/best.pt`.
 
 - Hugging Face checkpoint: [HJHGJGHHG/robosyn-sample_loading](https://huggingface.co/HJHGJGHHG/robosyn-sample_loading).
 - Policy directory: `policy/sample_loading`.
@@ -18,4 +18,4 @@ Use a physical GPU index in place of `0`; `random` can be replaced with `clear`.
 
 RGB inputs are `cam_high`, `cam_right_wrist`, and `cam_left_wrist`, together with public robot joint observations. The policy sends 14-dimensional absolute joint/gripper targets through the official environment interface. The task directory includes its model definition, planner, and static assets.
 
-Checkpoint SHA256: `fa2240b33ac7517021db8ce97972b8d339cd64e4f403da71637373bbe0398814`. See [`submission.json`](../submission.json) for the immutable Hugging Face revision.
+Checkpoint SHA256: `81533b46e6ab5a9d223daa7da2596937e17fa0a3056d0456531312e0cbd29834`. See [`submission.json`](../submission.json) for the immutable Hugging Face revision.
