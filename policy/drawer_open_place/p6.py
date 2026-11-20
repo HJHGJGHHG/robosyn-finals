@@ -3,7 +3,7 @@ import itertools
 import numpy as np
 from scipy.spatial.transform import Rotation
 from .geometry import DRAWER_ROTATION,pose
-from .motion import PlanningError,branch_path,smooth_joint
+from .motion import PlanningError, UnsafePolicyState, branch_path, smooth_joint
 from .refinement import Suffix,end
 from .close_tail import append_close_tail
 from .clearance import check as clear
@@ -234,7 +234,7 @@ def refine(base,x,kin,cfg,measured=None):
 def retry_left_grasp(model,q):
     r,i=model.result,model.cursor
     if r.get('p6_left_contact_retry'):
-        raise PlanningError('p6_left_contact_empty')
+        raise UnsafePolicyState('p6_left_contact_empty')
     errors=[]
     for tilt in (0,-30):
         try:
@@ -287,7 +287,7 @@ def update(model,q):
     if model.execution_failure or not r['stages']:return
     if i==end(r,'right_grip_settle') and q[13]<.002:
         if r.get('p6_initial_contact_retry'):
-            raise PlanningError('p6_initial_contact_empty')
+            raise UnsafePolicyState('p6_initial_contact_empty')
         # An empty jaw before the first pull permits a new initial approach at closed geometry.
         initial=q.copy();initial[[6,13]]=np.clip(initial[[6,13]],0,.05)
         previous=r['actions'][i-1];n=10
@@ -322,9 +322,9 @@ def update(model,q):
     if r.get('p6_initial_grasp') and (end(r,'left_lift')<=i or r.get('p6_left_contact_retry')) and i<r['close_start_step']:
         actual=model.kin['right_arm'].fk(q[None,7:13])[0]
         if not .002<=q[13]<=.012 or np.linalg.norm(actual[:3,3]-r['targets']['right_pull'][:3,3])>.003:
-            raise PlanningError('p6_right_grasp_feedback',dict(jaw_m=float(q[13])))
+            raise UnsafePolicyState('p6_right_grasp_feedback',dict(jaw_m=float(q[13])))
         bad=right_pairs(q,model.kin,model.parameters,model.config,model.config['pull_distance_m'])-{('link7','InnerBox',10),('link8','InnerBox',10)}
-        if bad:raise PlanningError('p6_right_feedback_collision',dict(pairs=sorted(bad)))
+        if bad:raise UnsafePolicyState('p6_right_feedback_collision',dict(pairs=sorted(bad)))
     if i==end(r,'left_lift') and q[6]<.002:
         model.result=retry_left_grasp(model,q)
         return
@@ -344,18 +344,18 @@ def update(model,q):
             old_command=model.kin['left_arm'].fk(r['actions'][history[0][0]:history[0][0]+1,:6])[0]
             new_command=model.kin['left_arm'].fk(r['actions'][i:i+1,:6])[0]
             if error>2 and old_command[2,3]-new_command[2,3]>.004 and history[0][1]-actual[2,3]<.001:
-                raise PlanningError('p6_descent_stall',dict(joint_error_deg=error))
+                raise UnsafePolicyState('p6_descent_stall',dict(joint_error_deg=error))
     if name=='left_release' and i==stage['start']:
         target=r['targets']['left_place']
         if np.linalg.norm(actual[:3,3]-target[:3,3])>.015:
-            raise PlanningError('p6_release_pose_error')
+            raise UnsafePolicyState('p6_release_pose_error')
         check_pose(q,model.kin,model.parameters,model.config)
     if r.get('p6_runtime_replan_at')==i and not model.replanned:
         model.result=retreat(r,model.parameters,model.kin,model.config,i,q);model.replanned=True
         if r.get('p6_initial_grasp'):check_initial_route(model.result,model.parameters,model.kin,model.config,start_step=i)
     if name=='right_push_coarse' and i==stage['start']:
         clear(q[:7],model.kin['left_arm'].base,model.parameters[6:9],model.config['asset_source'])
-        if q[6]<.04:raise PlanningError('p6_close_before_jaw_open')
+        if q[6]<.04:raise UnsafePolicyState('p6_close_before_jaw_open')
 
 
 def escape(model,q,exc):

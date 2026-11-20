@@ -4,6 +4,7 @@ Only RGB, robot proprioception/kinematics and fixed task geometry enter planning
 Object ground truth and success checks belong to the external evaluator.
 This baseline predicts once per episode; it is not stage-wise visual feedback.
 """
+from ..episode_failure import NonFinitePlan, PerceptionInsufficient, end_episode
 import hashlib
 import json
 import time
@@ -79,23 +80,15 @@ class Policy:
         self.parameters = None
         self.cursor = 0
         self.plan_attempted = False
+        self.episode_failure = None
         self.done = False
-        self.initial_observation = None
-        self.initial_observation_receipt = None
         self._submission_steps = 0
 
-    def prepare_initial_observation(self, env, obs):
-        if self.initial_observation is None:
-            from .initial_observation import synchronized_initial_observation
-            self.initial_observation, self.initial_observation_receipt = synchronized_initial_observation(env, obs)
-        return self.initial_observation
-
-    def make_plan(self, env, obs, *, diagnostic_targets=None, diagnostic_mode='predicted'):
+    def make_plan(self, obs, *, diagnostic_targets=None, diagnostic_mode='predicted'):
         """Plan from live observations; explicitly named oracle inputs are diagnostic-only 10D labels."""
         if self.plan_attempted:
             raise RuntimeError('Planning already attempted; reset is required')
         self.plan_attempted = True
-        obs = self.prepare_initial_observation(env, obs)
         images, qpos = encode_obs(obs, self.device)
         with torch.inference_mode():
             values = self.network(images, qpos)['parameters'][0]
@@ -111,13 +104,16 @@ class Policy:
             from .calibrated_planner import plan as calibrated_plan
             self.result = calibrated_plan(tube, rack, kin, qinit, self.geometry, self.calibration)
         else:
-            try:
-                self.result = plan(tube, rack, kin, qinit, self.geometry, max_steps=self.max_steps, settle_steps=self.settle_steps,transport_steps=self.transport_steps,control_variant=self.control_variant)
-            except PlanningError as exc:
-                self.result = {'actions':qinit[None], 'stages':[], 'planning_error':str(exc), 'rejections':getattr(exc, 'rejections', [])}
+            self.result = plan(tube, rack, kin, qinit, self.geometry, max_steps=self.max_steps, settle_steps=self.settle_steps,transport_steps=self.transport_steps,control_variant=self.control_variant)
         actions = self.result['actions']
-        if actions.ndim != 2 or actions.shape[1] != 14 or not 0 < len(actions) <= self.max_steps or not np.isfinite(actions).all():
+        if actions.ndim != 2 or actions.shape[1] != 14:
             raise ValueError('Invalid action plan')
+        if len(actions) == 0:
+            raise PlanningError('Planner produced no command')
+        if len(actions) > self.max_steps:
+            raise PlanningError('Action plan exceeds episode budget')
+        if not np.isfinite(actions).all():
+            raise NonFinitePlan('Nonfinite action plan')
 
 
 def get_model(config):
@@ -137,14 +133,21 @@ def reset_model(model, seed=None, **kwargs):
 
 
 def eval(env, model, obs):
-    if model.done or model.cursor >= model.max_steps:
+    if model.episode_failure or model.done or model.cursor >= model.max_steps:
         raise RuntimeError('Episode ended; reset_model must precede another step')
     times = []
     if model.result is None:
         if model.device.type == 'cuda':
             torch.cuda.synchronize(model.device)
         started = time.perf_counter()
-        model.make_plan(env, obs)
+        try:
+            model.make_plan(obs)
+        except PlanningError as error:
+            return end_episode(model, obs, started, error)
+        except PerceptionInsufficient as error:
+            return end_episode(model, obs, started, error, 'perception_insufficient')
+        except NonFinitePlan as error:
+            return end_episode(model, obs, started, error, 'non_finite_plan')
         if model.device.type == 'cuda':
             torch.cuda.synchronize(model.device)
         times.append(time.perf_counter() - started)

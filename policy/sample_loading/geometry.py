@@ -1,6 +1,7 @@
 """Task geometry. Inputs are explicit estimates; no environment/GT access."""
 from dataclasses import dataclass
 import numpy as np
+from ..episode_failure import PerceptionInsufficient
 from scipy.spatial.transform import Rotation
 
 CAMERAS = ('cam_high', 'cam_right_wrist', 'cam_left_wrist')
@@ -47,7 +48,7 @@ def encode(tube, rack):
 def decode(label):
     x = np.asarray(label, dtype=float)
     if x.shape != (10,) or not np.isfinite(x).all(): raise ValueError('Invalid 10D label')
-    if min(np.linalg.norm(x[6:8]),np.linalg.norm(x[8:10])) < .1: raise ValueError('Invalid angle pairs')
+    if min(np.linalg.norm(x[6:8]),np.linalg.norm(x[8:10])) < .1: raise PerceptionInsufficient('Invalid angle pairs')
     heading, yaw = np.arctan2(x[6],x[7]), np.arctan2(x[8],x[9])
     rot = Rotation.from_euler('z',heading).as_matrix() @ Rotation.from_euler('y',np.pi/2).as_matrix()
     return transform(rot,x[:3]-.025*rot[:,2]), transform(Rotation.from_euler('z',yaw).as_matrix(),x[3:6])

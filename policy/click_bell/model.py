@@ -1,4 +1,5 @@
 from collections import deque
+from ..episode_failure import PlanningInfeasible
 import numpy as np
 import torch
 from torch import nn
@@ -128,12 +129,16 @@ class ParaPred(nn.Module):
                 else:
                     base.affordance_datas[key] = value
         if actions is None:
-            raise RuntimeError("ParaPred click_bell template was infeasible")
+            error = PlanningInfeasible("ParaPred click_bell template was infeasible")
+            error.diagnostics = {"rejected_nodes": base.rejected_nodes}
+            raise error
         actions = torch.as_tensor(actions).detach().cpu().numpy()
         if actions.ndim == 3:
             actions = actions[:, 0]
         if actions.ndim != 2 or actions.shape[1] != 14:
             raise RuntimeError(f"unexpected click_bell action shape {actions.shape}")
+        if len(actions) == 0:
+            raise PlanningInfeasible('Planner produced no command')
         self._action_queue.clear()
         self._action_queue.extend(np.asarray(actions, np.float32))
         self._last_action = np.asarray(actions[-1], np.float32).copy()

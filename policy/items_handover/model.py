@@ -2,6 +2,7 @@ from .planning import MotionGenerator
 from collections import deque
 from copy import deepcopy
 import os
+from ..episode_failure import PlanningInfeasible
 import numpy as np
 import torch
 from torch import nn
@@ -208,7 +209,7 @@ class ParaPred(nn.Module):
                 if ok and qpos is not None and np.isfinite(qpos).all():
                     solutions.append(np.asarray(qpos,dtype=np.float32))
             if not solutions:
-                print(f"ParaPred warning: unreachable {part} waypoint {pose[:3,3].tolist()} after {len(seeds)} attempts; holding last valid target",flush=True)
+                print(f"ParaPred warning: unreachable {part} waypoint {pose[:3,3].tolist()} after {len(seeds)} attempts",flush=True)
                 return seed,False
             return min(solutions,key=lambda value:float(np.linalg.norm(value-seed))),True
         def move(part,target,steps):
@@ -378,6 +379,8 @@ class ParaPred(nn.Module):
         lq_place,ok_lplace=solve("left_arm",left_place_pose,lq_move)
         feasibility=(ok_rpre,ok_rgrasp,ok_runblock,ok_rregrasp,ok_rregrasp2,ok_rregrasp3,ok_rregrasp4,ok_rup,ok_rhandover,ok_rback,ok_ltakeover,ok_lpre,ok_lmove,ok_lplace)
         print(f"ParaPred template IK feasibility={feasibility}",flush=True)
+        if not all(feasibility):
+            raise PlanningInfeasible(f"items_handover waypoint IK infeasible: {feasibility}")
         # Exactly 300 actions.  After takeover, the right arm releases and
         # retreats completely before any left-arm transport begins.
         move("right_arm",rq_pre,15)

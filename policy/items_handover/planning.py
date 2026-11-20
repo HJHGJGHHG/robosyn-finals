@@ -1,4 +1,6 @@
 """Observation-owned planning: static URDF, predicted geometry, no simulator state."""
+from ..checked_planning import graph_actions, joint_trajectory
+from ..episode_failure import NonFinitePlan
 from copy import deepcopy
 import json
 from pathlib import Path
@@ -7,9 +9,6 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import torch
 from embodichain.lab.sim.solvers import OPWSolverCfg
-from embodichain.lab.sim.planners.toppra_planner import (
-    _toppra_solve_one_env, TrajectorySampleMethod,
-)
 from embodichain.lab.gym.envs.action_bank.configurable_action import ActionBank, get_func_tag
 
 ROOT = Path(__file__).resolve().parent
@@ -66,20 +65,6 @@ class RobotKinematics:
         return success, qpos.reshape(-1, 6)
 
 
-def joint_trajectory(waypoints, steps, velocity=.2, acceleration=.5):
-    q = np.asarray(waypoints, dtype=np.float64)
-    if q.ndim != 2 or len(q) < 2 or not np.isfinite(q).all() or int(steps) != steps or steps < 2:
-        raise ValueError('Invalid joint trajectory input')
-    if all(np.linalg.norm(a-b) <= 1e-3 for a,b in zip(q,q[1:])):
-        return np.repeat(q[:1], int(steps), axis=0).astype(np.float32)
-    result = _toppra_solve_one_env(q, velocity, acceleration,
-                                  TrajectorySampleMethod.QUANTITY, int(steps))
-    frames = result['positions']
-    if not result['success'] or frames.shape != (steps, q.shape[1]) or not np.isfinite(frames).all():
-        raise RuntimeError('Independent TOPPRA planning failed')
-    return frames.astype(np.float32)
-
-
 class MotionGenerator:
     """Joint-only adapter for the existing three direct-IK templates."""
     def __init__(self, robot):
@@ -109,6 +94,7 @@ class PlanningContext:
         self.robot = robot
         self.robot.observe(state)
         self.device = torch.device('cpu')
+        self.rejected_nodes = []
         self.task = task
         self.cfg = SimpleNamespace(control_parts=['left_arm', 'left_eef', 'right_arm', 'right_eef'])
         self.affordance_datas = {f'{arm}_base_pose': pose.numpy().copy()
@@ -145,12 +131,14 @@ class PlanningContext:
         self.packages = self.action_bank.gantt(tasks_data=jobs, taskkey2index=indices, vis=False)
 
     def plan_graph(self):
-        ret = self.action_bank.create_action_list(self, self.graph_compose, self.packages)
+        ret = graph_actions(self)
         if ret is None: return None
         keys = ('left_arm','left_eef','right_arm','right_eef')
         frames = np.concatenate([ret[k] for k in keys], axis=0).T.astype(np.float32)
         # Graph jaws are normalized; official env.step accepts physical joint positions.
         frames[:, [6, 13]] *= .05
-        if frames.ndim != 2 or frames.shape[1] != 14 or not np.isfinite(frames).all():
+        if frames.ndim != 2 or frames.shape[1] != 14:
             raise RuntimeError('Action graph returned invalid joint commands')
+        if not np.isfinite(frames).all():
+            raise NonFinitePlan('Nonfinite graph commands')
         return frames

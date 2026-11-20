@@ -15,6 +15,7 @@ git clone https://github.com/HJHGJGHHG/robosyn-finals.git
 git clone https://github.com/EDEM-AI/RoboSynChallenge.git RoboSynChallenge-finals
 git -C RoboSynChallenge-finals checkout 45d9b9c4c78c66ef340a055697f3ad833ce567f4
 cp -a robosyn-finals/policy/. RoboSynChallenge-finals/policy/
+cp -a robosyn-finals/rsc_real RoboSynChallenge-finals/
 cd RoboSynChallenge-finals
 ```
 

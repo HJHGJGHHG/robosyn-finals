@@ -1,0 +1,136 @@
+{
+  "shared": {
+    "checked_planning.py": "1b3e226a2457d7658e70cc913b1f5dfea4f8e5f747044d651557457a594d1091",
+    "episode_failure.py": "0302b7e643cd5c3538701ef367f8746fb17dbd8b49b195c08220402508043418"
+  },
+  "tasks": {
+    "click_bell": {
+      "entrypoint": "submission_runtime.py",
+      "sources": {
+        "click_bell/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "click_bell/deploy_policy.py": "dc311e60cb2277e08d03eb26db317cc904d2a1d4e7eb16220952e941203c7c37",
+        "click_bell/model.py": "8d8cf45d70ddc69e3e7546be551a0143adf9f0824e7a67b88233db3c026997fa",
+        "click_bell/planning.py": "fe750d6b4ff340504a5ed68bb6f122ff72c55a8d178f28df34d5e2c7f4cf59ca",
+        "click_bell/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4",
+        "click_bell/submission_runtime.py": "8854367a3260ee205ceacbc73fb5a57a1f8e0870f64ce72155f4091a0ba66953"
+      }
+    },
+    "drawer_open_place": {
+      "entrypoint": "deploy_policy.py",
+      "sources": {
+        "drawer_open_place/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "drawer_open_place/clearance.py": "ea753bb3727ac10a50d420a0e2b65c59a9a7f3e6f39da49c02c0526c8e4205de",
+        "drawer_open_place/close_tail.py": "343c5a56c3041374fc22cdaa945226490ad8a986a779ae1db9cb4aaedb4f41a5",
+        "drawer_open_place/corridor.py": "bc7f3680118fde2aa10ecb740cd23d800d504135112c826f04f9eea1abd3cda2",
+        "drawer_open_place/deploy_policy.py": "0f4eef58edc4b91b354db60aa2cac87e2408e98740092e15c059263dfe8536e4",
+        "drawer_open_place/geometry.py": "5544fc98845e8139967d98dd0f722440afec8dd15376ee5214a4906232fd85c5",
+        "drawer_open_place/kinematics.py": "9d1fa2f69c63781ec2f78b9ac08136d3f292fe4a4988518715340b58fb78f680",
+        "drawer_open_place/model.py": "29420839782297df9f15509dc724b8278bc3a5eb85711a024f10d58d644180ab",
+        "drawer_open_place/motion.py": "c74be3d61298ecbff609358b7f221b1f4075525e0ec4e96c8c4d4aee03988901",
+        "drawer_open_place/observation.py": "9a951bed97191bf7286c75ff8fb28ac9308d838c0b0145b9d6b12b51919a4402",
+        "drawer_open_place/p6.py": "e1b4a5c8f4a21235c39fe61659a2a90c8dc78aefa49cccf8017228bcd3b58034",
+        "drawer_open_place/planner.py": "245afb78662e7e5b74aedc3ea2152aa4854fd1270ce01ca42909aa752eccc3b5",
+        "drawer_open_place/refinement.py": "67aefac9ce104658c7ea8b1da1527093c439373883966903437aa0cdbd10edf0",
+        "drawer_open_place/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4"
+      }
+    },
+    "handle_basket": {
+      "entrypoint": "submission_runtime.py",
+      "sources": {
+        "handle_basket/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "handle_basket/deploy_policy.py": "8548a5b1b92f60060dc06b72eee33b726fc8a6389c46b726295c35ad5d49b566",
+        "handle_basket/model.py": "cb486ef35fc44734db608b6262e3e1b5699d44b123ba41044ad49c69b12bd07e",
+        "handle_basket/planning.py": "fe750d6b4ff340504a5ed68bb6f122ff72c55a8d178f28df34d5e2c7f4cf59ca",
+        "handle_basket/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4",
+        "handle_basket/submission_runtime.py": "8854367a3260ee205ceacbc73fb5a57a1f8e0870f64ce72155f4091a0ba66953"
+      }
+    },
+    "item_assembly": {
+      "entrypoint": "submission_runtime.py",
+      "sources": {
+        "item_assembly/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "item_assembly/deploy_policy.py": "922ea832a46960b27b196e548b65108e603bf7b14115e9acaed8f22bd8976590",
+        "item_assembly/model.py": "f1665cef6c4014b94b3af0663d52ae67649d0f4c4585a84e1c9651da4d2cae59",
+        "item_assembly/planning.py": "fe750d6b4ff340504a5ed68bb6f122ff72c55a8d178f28df34d5e2c7f4cf59ca",
+        "item_assembly/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4",
+        "item_assembly/submission_runtime.py": "8854367a3260ee205ceacbc73fb5a57a1f8e0870f64ce72155f4091a0ba66953"
+      }
+    },
+    "items_handover": {
+      "entrypoint": "submission_runtime.py",
+      "sources": {
+        "items_handover/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "items_handover/deploy_policy.py": "f7b8d5fb07f6e1b8e2e4743a136badee8aa9f20ae26d882d2f30525a04728d97",
+        "items_handover/model.py": "f2854d87de82aee2068e41c1b48869009b7b02fe73f7594b5589c5da95c143a8",
+        "items_handover/planning.py": "fe750d6b4ff340504a5ed68bb6f122ff72c55a8d178f28df34d5e2c7f4cf59ca",
+        "items_handover/schema.py": "281c3c09a6249ca8324d80ca8e6ba7f43ea942ef3f6c06a0ec7c62b4caffe47c",
+        "items_handover/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4",
+        "items_handover/submission_runtime.py": "8854367a3260ee205ceacbc73fb5a57a1f8e0870f64ce72155f4091a0ba66953"
+      }
+    },
+    "manipulate_pipette": {
+      "entrypoint": "submission_runtime.py",
+      "sources": {
+        "manipulate_pipette/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "manipulate_pipette/deploy_policy.py": "5d177e3b9341fcf25c5c57e7c9cf1b52b824c61dd98c25cedffe05a46eed3f73",
+        "manipulate_pipette/model.py": "bf0deb05aa7a59b70e83f814e91ec530fcfc8544e1eb3a7415c8d6935e6517b1",
+        "manipulate_pipette/planning.py": "fe750d6b4ff340504a5ed68bb6f122ff72c55a8d178f28df34d5e2c7f4cf59ca",
+        "manipulate_pipette/schema.py": "ee867e9ecaf41b88fb1b6fdd48d030c6ac7075748c556fb060af14e8275350a2",
+        "manipulate_pipette/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4",
+        "manipulate_pipette/submission_runtime.py": "8854367a3260ee205ceacbc73fb5a57a1f8e0870f64ce72155f4091a0ba66953"
+      }
+    },
+    "mixer_operating": {
+      "entrypoint": "submission_runtime.py",
+      "sources": {
+        "mixer_operating/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "mixer_operating/deploy_policy.py": "a27fa6af0c928804e6ab41eafae1f5e851d2496f41e411d6b163dcd80b72fab1",
+        "mixer_operating/model.py": "3ff9627e1efabd8f03d2f66849edc6cbc047558a14a07a165e94658601e9440e",
+        "mixer_operating/planning.py": "fe750d6b4ff340504a5ed68bb6f122ff72c55a8d178f28df34d5e2c7f4cf59ca",
+        "mixer_operating/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4",
+        "mixer_operating/submission_runtime.py": "8854367a3260ee205ceacbc73fb5a57a1f8e0870f64ce72155f4091a0ba66953"
+      }
+    },
+    "sample_loading": {
+      "entrypoint": "deploy_policy.py",
+      "sources": {
+        "sample_loading/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "sample_loading/base_model.py": "4081ebfc9375ba2a85fe21416ae02fa92ee5df1993211df8257e114c5cd322c8",
+        "sample_loading/calibrated_planner.py": "71a60d9b58d0674309e18c4f9310126d546a8869a93f30013a2bf8c4add6ffd0",
+        "sample_loading/deploy_policy.py": "c8a418b89cc8aa33eed068e0118d454b33e3ca26bbf8d2affaa50a552a7f0ab9",
+        "sample_loading/diagnostics.py": "d56488e449b8413e758a8064e3d79bee28527bc0b27a25ae31da25572841b81d",
+        "sample_loading/geometry.py": "1234962e155d8fd9bd9447609d863dbbd2e305f27bf9b544e6a0b63b7c9b2c9f",
+        "sample_loading/initial_observation.py": "95fda5d03db9d429bd9124d714af4a74d03504c272bdcb863a7c3454965cf1d2",
+        "sample_loading/insertion_geometry.py": "2f859edd6acfa5fb1ced463f5254987f2f95446c429a4ee34aeecf607de57771",
+        "sample_loading/insertion_motion.py": "73556ea817cd954a8a88bea8d9de0f2b0170ab3520d6262d0fd4c7903b4c7b91",
+        "sample_loading/kinematics.py": "d10b06387498fb6653bd7e4b9596a5805d335f2065bf18dafe7736afbcb7422f",
+        "sample_loading/model.py": "4081ebfc9375ba2a85fe21416ae02fa92ee5df1993211df8257e114c5cd322c8",
+        "sample_loading/model_v4.py": "18ef094a370abf457750eb08c553cdb41ab8d3f51c729259428ad827224ff578",
+        "sample_loading/planner.py": "6e54ae7d423b4d63a274e3fba2e50f3c8508d9c5ab1ec98a0454f0a6f6ac2d95",
+        "sample_loading/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4"
+      }
+    },
+    "table_rearrangement": {
+      "entrypoint": "submission_runtime.py",
+      "sources": {
+        "table_rearrangement/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "table_rearrangement/deploy_policy.py": "d45e7a8de5b21d1abc3b2d2161fd4b60056fc432fdb3c72e36abe749029ad66c",
+        "table_rearrangement/model.py": "0d9e9773353a989382d6a44987d6e353104e8cb587945c923b744de1e28d6ec2",
+        "table_rearrangement/planning.py": "fe750d6b4ff340504a5ed68bb6f122ff72c55a8d178f28df34d5e2c7f4cf59ca",
+        "table_rearrangement/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4",
+        "table_rearrangement/submission_runtime.py": "8854367a3260ee205ceacbc73fb5a57a1f8e0870f64ce72155f4091a0ba66953"
+      }
+    },
+    "water_pouring": {
+      "entrypoint": "submission_runtime.py",
+      "sources": {
+        "water_pouring/__init__.py": "ee0cd77fb2736ac5fa1201476b04360b34b6229d44cb459cc17059378af04e14",
+        "water_pouring/deploy_policy.py": "1d67193345abef48d4d9af612664d64c84d558f24338b15ad0b72f25597da1c5",
+        "water_pouring/model.py": "517e7c8f24b405cf18ef8b0634147827de30c652bdb2a0b3f2070c86e6187cfe",
+        "water_pouring/planning.py": "fe750d6b4ff340504a5ed68bb6f122ff72c55a8d178f28df34d5e2c7f4cf59ca",
+        "water_pouring/submission_eval.py": "cd7dc5fb0cbd18438e34f14ed9a0d1c5fd9e017ab460f67fc00b646e43c519e4",
+        "water_pouring/submission_runtime.py": "8854367a3260ee205ceacbc73fb5a57a1f8e0870f64ce72155f4091a0ba66953"
+      }
+    }
+  }
+}

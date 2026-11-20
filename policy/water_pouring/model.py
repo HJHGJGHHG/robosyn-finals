@@ -1,5 +1,6 @@
 from collections import deque
 from copy import deepcopy
+from ..episode_failure import PlanningInfeasible
 import numpy as np
 import torch
 from torch import nn
@@ -182,6 +183,7 @@ class ParaPred(nn.Module):
             base.bottle_xy_random_center = predicted["bottle_pose"][:2, 3].copy()
             base.cup_xy_random_center = predicted["cup_pose"][:2, 3].copy()
             actions = None
+            last_rejection = None
             selected = None
             # Strict approach rule: every pre-grasp waypoint lies on the
             # gripper local approach axis. Never sweep laterally into an object.
@@ -227,7 +229,11 @@ class ParaPred(nn.Module):
                                     "control_part": arm, "fk_func": "env.robot.compute_fk"}}]}],
                         }]
                     base.initialize_graph(WaterPouringActionBank, action_config)
-                    actions = base.plan_graph()
+                    try:
+                        actions = base.plan_graph()
+                    except PlanningInfeasible as error:
+                        last_rejection = error
+                        continue
                     if actions is not None:
                         selected = (bottle_index, cup_index, "gripper_axis", bottle_yaw, cup_yaw, bottle_distance, cup_distance, "bottle_first")
                         break
@@ -240,12 +246,18 @@ class ParaPred(nn.Module):
                 else:
                     base.affordance_datas[key] = value
         if actions is None:
-            raise RuntimeError("ParaPred water_pouring template was infeasible")
+            error = PlanningInfeasible("ParaPred water_pouring template was infeasible")
+            error.diagnostics = {'rejected_nodes': base.rejected_nodes}
+            if last_rejection is not None:
+                error.diagnostics['last_rejection'] = str(last_rejection)
+            raise error from last_rejection
         actions = torch.as_tensor(actions).detach().cpu().numpy()
         if actions.ndim == 3:
             actions = actions[:, 0]
         if actions.ndim != 2 or actions.shape[1] != 14:
             raise RuntimeError(f"unexpected water_pouring action shape {actions.shape}")
+        if len(actions) == 0:
+            raise PlanningInfeasible('Planner produced no command')
         self._action_queue.clear()
         self._action_queue.extend(np.asarray(actions, np.float32))
         self._last_action = np.asarray(actions[-1], np.float32).copy()
@@ -336,7 +348,7 @@ class ParaPred(nn.Module):
         lq_align = np.array([-.7503578, 1.9010533, -1.4435098, 1.7379255, 1.1659968, -.4047130], np.float32)
         lq_get = np.array([-.8100434, 2.1020808, -1.7696371, 1.6664896, 1.2061079, -.2628981], np.float32)
         feasible = (ok1, ok2, ok3, ok4, ok5, ok6)
-        if not all(feasible): raise RuntimeError(f"ParaPred water_pouring grasp IK infeasible: {feasible}")
+        if not all(feasible): raise PlanningInfeasible(f"ParaPred water_pouring grasp IK infeasible: {feasible}")
         # 300 frames: predicted grasp, secure hold, safe lift, canonical assembly, settle/release.
         move("right_arm", rq_pre, 15); move("left_arm", lq_pre, 15)
         move("right_arm", rq_grasp, 15); grip("right_arm", 0., 15, 5)

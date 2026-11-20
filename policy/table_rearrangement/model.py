@@ -1,5 +1,6 @@
 from collections import deque
 from copy import deepcopy
+from ..episode_failure import PlanningInfeasible
 import numpy as np
 import torch
 from torch import nn
@@ -175,12 +176,17 @@ class ParaPred(nn.Module):
             candidates.append((name, candidate, base.action_config))
             candidates.append((name + "_pre2_3cm", candidate, short_approach_config))
         actions = None
+        last_rejection = None
         selected = None
         try:
             for candidate_name, candidate, action_config in candidates:
                 base.affordance_datas.update(candidate)
                 base.initialize_graph(TableRearrangementActionBank, action_config)
-                actions = base.plan_graph()
+                try:
+                    actions = base.plan_graph()
+                except PlanningInfeasible as error:
+                    last_rejection = error
+                    continue
                 if actions is not None:
                     selected = candidate_name
                     break
@@ -191,12 +197,18 @@ class ParaPred(nn.Module):
                 else:
                     base.affordance_datas[key] = value
         if actions is None:
-            raise RuntimeError("ParaPred table_rearrangement template was infeasible")
+            error = PlanningInfeasible("ParaPred table_rearrangement template was infeasible")
+            error.diagnostics = {'rejected_nodes': base.rejected_nodes}
+            if last_rejection is not None:
+                error.diagnostics['last_rejection'] = str(last_rejection)
+            raise error from last_rejection
         actions = torch.as_tensor(actions).detach().cpu().numpy()
         if actions.ndim == 3:
             actions = actions[:, 0]
         if actions.ndim != 2 or actions.shape[1] != 14:
             raise RuntimeError(f"unexpected table_rearrangement action shape {actions.shape}")
+        if len(actions) == 0:
+            raise PlanningInfeasible('Planner produced no command')
         self._action_queue.clear()
         self._action_queue.extend(np.asarray(actions, np.float32))
         self._last_action = np.asarray(actions[-1], np.float32).copy()

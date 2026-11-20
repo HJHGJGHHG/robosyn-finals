@@ -1,5 +1,6 @@
 """Offline geometry diagnostics and explicit 10D oracle substitutions; no simulator access."""
 import numpy as np
+from ..episode_failure import PerceptionInsufficient
 
 MODES = {'O0': 'predicted', 'O1': 'grasp', 'O2': 'rack', 'O3': 'both', 'C0': 'predicted'}
 
@@ -7,8 +8,10 @@ MODES = {'O0': 'predicted', 'O1': 'grasp', 'O2': 'rack', 'O3': 'both', 'C0': 'pr
 def mix_parameters(predicted, targets, mode):
     """Return a finite (10,) vector; replace only the named position/angle components."""
     x = np.asarray(predicted, dtype=float).copy()
-    if x.shape != (10,) or not np.isfinite(x).all():
+    if x.shape != (10,):
         raise ValueError('invalid predicted parameters')
+    if not np.isfinite(x).all():
+        raise PerceptionInsufficient('invalid predicted parameters')
     if mode not in MODES.values():
         raise ValueError(mode)
     if mode == 'predicted':

@@ -1,0 +1,882 @@
+[
+  {
+    "task": "drawer_open_place",
+    "file": "clearance.py",
+    "function": "check",
+    "error_type": "PlanningError",
+    "line": 56,
+    "expression": "'left_clearance_swept_aabb:' + name",
+    "condition": "((local.max(0) >= low) & (local.min(0) <= high)).all()",
+    "reason": "left_clearance_swept_aabb:stage"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "close_tail.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 35,
+    "expression": "name + ':branch_join'",
+    "condition": "np.max(abs(path[0] - current[sl])) > 0.01",
+    "reason": "stage:branch_join"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "close_tail.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 44,
+    "expression": "name + ':cartesian_residual'",
+    "condition": "np.linalg.norm(actual[:, :3, 3] - expected, axis=1).max() > 0.0005",
+    "reason": "stage:cartesian_residual"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "close_tail.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 45,
+    "expression": "name + ':angular_residual'",
+    "condition": "Rotation.from_matrix(actual[:, :3, :3] @ target[:3, :3].T).magnitude().max() > np.deg2rad(0.25)",
+    "reason": "stage:angular_residual"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "close_tail.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 53,
+    "expression": "name + ':retiming_failed'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "stage:retiming_failed"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "close_tail.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 55,
+    "expression": "name + ':step_budget'",
+    "condition": "offset + n > max_steps",
+    "reason": "stage:step_budget"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "corridor.py",
+    "function": "check_pose",
+    "error_type": "PlanningError",
+    "line": 65,
+    "expression": "sorted(pairs)[0]",
+    "condition": "pairs",
+    "reason": "fixture_collision_pair"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "deploy_policy.py",
+    "function": "hold_one",
+    "error_type": "PlanningError",
+    "line": 55,
+    "expression": "'runtime_wait:step_budget'",
+    "condition": "len(r['actions']) >= model.max_steps",
+    "reason": "runtime_wait:step_budget"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "deploy_policy.py",
+    "function": "update_suffix",
+    "error_type": "UnsafePolicyState",
+    "line": 96,
+    "expression": "stage + ':actual_tracking_or_clearance_timeout'",
+    "condition": "state['waited'] >= (5 if placement_gate else 20)",
+    "reason": "left_release:actual_tracking_or_clearance_timeout"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "deploy_policy.py",
+    "function": "eval",
+    "error_type": "PlanningError",
+    "line": 155,
+    "expression": "'Planner produced no command'",
+    "condition": "len(actions) == 0",
+    "reason": "Planner produced no command"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "motion.py",
+    "function": "branch_path",
+    "error_type": "PlanningError",
+    "line": 41,
+    "expression": "'ik_or_margin'",
+    "condition": "not valid.any(1).all()",
+    "reason": "ik_or_margin"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "motion.py",
+    "function": "branch_path",
+    "error_type": "PlanningError",
+    "line": 54,
+    "expression": "'ik_branch_discontinuity'",
+    "condition": "not np.isfinite(new_costs).any()",
+    "reason": "ik_branch_discontinuity"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "motion.py",
+    "function": "branch_path",
+    "error_type": "PlanningError",
+    "line": 56,
+    "expression": "'ik_branch_discontinuity'",
+    "condition": "not np.isfinite(costs).any()",
+    "reason": "ik_branch_discontinuity"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "motion.py",
+    "function": "branch_path",
+    "error_type": "PlanningError",
+    "line": 64,
+    "expression": "'fk_residual'",
+    "condition": "pos.max() > 0.0005 or ang.max() > np.deg2rad(0.25)",
+    "reason": "fk_residual"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "check_initial_route",
+    "error_type": "PlanningError",
+    "line": 47,
+    "expression": "'p6_initial_right_collision'",
+    "condition": "bad",
+    "reason": "p6_initial_right_collision"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "check_initial_route",
+    "error_type": "PlanningError",
+    "line": 50,
+    "expression": "'p6_initial_route_collision'",
+    "condition": "pairs",
+    "reason": "p6_initial_route_collision"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "check_initial_route",
+    "error_type": "PlanningError",
+    "line": 56,
+    "expression": "'p6_initial_handle_not_straddled'",
+    "condition": "not all((intersects(fingers[name], bar, margin=0.0) for name in ('link7', 'link8')))",
+    "reason": "p6_initial_handle_not_straddled"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "check_initial_route",
+    "error_type": "PlanningError",
+    "line": 59,
+    "expression": "'p6_initial_approach_contact'",
+    "condition": "right_pairs(contact, kin, x, cfg, 0.0) & handle",
+    "reason": "p6_initial_approach_contact"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "initial_grasp",
+    "error_type": "PlanningError",
+    "line": 77,
+    "expression": "'p6_initial_right_endpoint'",
+    "condition": "pairs - handle",
+    "reason": "p6_initial_right_endpoint"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "initial_grasp",
+    "error_type": "PlanningError",
+    "line": 78,
+    "expression": "'p6_initial_handle_not_straddled'",
+    "condition": "jaw == 0 and (not handle <= pairs)",
+    "reason": "p6_initial_handle_not_straddled"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "initial_grasp",
+    "error_type": "PlanningError",
+    "line": 87,
+    "expression": "'p6_initial_release_collision'",
+    "condition": "bad",
+    "reason": "p6_initial_release_collision"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "initial_grasp",
+    "error_type": "PlanningError",
+    "line": 91,
+    "expression": "'p6_initial_grasp:step_budget'",
+    "condition": "len(candidate['actions']) > max_steps",
+    "reason": "p6_initial_grasp:step_budget"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "initial_grasp",
+    "error_type": "PlanningError",
+    "line": 98,
+    "expression": "'p6_initial_grasp_unavailable'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "p6_initial_grasp_unavailable"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "release_pose",
+    "error_type": "PlanningError",
+    "line": 115,
+    "expression": "'p6_object_footprint'",
+    "condition": "(abs(local[:, :2]).max(0) > 0.067).any()",
+    "reason": "p6_object_footprint"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "retreat",
+    "error_type": "PlanningError",
+    "line": 144,
+    "expression": "'p6_escape_new_collision'",
+    "condition": "not pairs <= allowed",
+    "reason": "p6_escape_new_collision"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "retreat",
+    "error_type": "PlanningError",
+    "line": 155,
+    "expression": "'p6_retreat_unavailable'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "p6_retreat_unavailable"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "_refine",
+    "error_type": "PlanningError",
+    "line": 215,
+    "expression": "'p6_all_corridors_failed'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "p6_all_corridors_failed"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "refine",
+    "error_type": "PlanningError",
+    "line": 226,
+    "expression": "'p6_all_corridors_failed'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "p6_all_corridors_failed"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "retry_left_grasp",
+    "error_type": "UnsafePolicyState",
+    "line": 237,
+    "expression": "'p6_left_contact_empty'",
+    "condition": "r.get('p6_left_contact_retry')",
+    "reason": "p6_left_contact_empty"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "retry_left_grasp",
+    "error_type": "PlanningError",
+    "line": 266,
+    "expression": "'p6_left_retry:contact_geometry'",
+    "condition": "touching != expected",
+    "reason": "p6_left_retry:contact_geometry"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "retry_left_grasp",
+    "error_type": "PlanningError",
+    "line": 276,
+    "expression": "'p6_left_retry:step_budget'",
+    "condition": "len(out['actions']) > model.max_steps",
+    "reason": "p6_left_retry:step_budget"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "retry_left_grasp",
+    "error_type": "PlanningError",
+    "line": 282,
+    "expression": "'p6_left_retry_unavailable'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "p6_left_retry_unavailable"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "UnsafePolicyState",
+    "line": 290,
+    "expression": "'p6_initial_contact_empty'",
+    "condition": "r.get('p6_initial_contact_retry')",
+    "reason": "p6_initial_contact_empty"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "PlanningError",
+    "line": 302,
+    "expression": "'p6_initial_unload:retiming_failed'",
+    "condition": "i == end(r, 'right_grip_settle') and q[13] < 0.002",
+    "reason": "p6_initial_unload:retiming_failed"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "PlanningError",
+    "line": 305,
+    "expression": "'p6_initial_unload:joint_margin'",
+    "condition": "margin < np.deg2rad(2)",
+    "reason": "p6_initial_unload:joint_margin"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "PlanningError",
+    "line": 309,
+    "expression": "'p6_initial_unload_collision'",
+    "condition": "bad or other",
+    "reason": "p6_initial_unload_collision"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "UnsafePolicyState",
+    "line": 325,
+    "expression": "'p6_right_grasp_feedback'",
+    "condition": "not 0.002 <= q[13] <= 0.012 or np.linalg.norm(actual[:3, 3] - r['targets']['right_pull'][:3, 3]) > 0.003",
+    "reason": "p6_right_grasp_feedback"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "UnsafePolicyState",
+    "line": 327,
+    "expression": "'p6_right_feedback_collision'",
+    "condition": "bad",
+    "reason": "p6_right_feedback_collision"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "UnsafePolicyState",
+    "line": 347,
+    "expression": "'p6_descent_stall'",
+    "condition": "error > 2 and old_command[2, 3] - new_command[2, 3] > 0.004 and (history[0][1] - actual[2, 3] < 0.001)",
+    "reason": "p6_descent_stall"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "UnsafePolicyState",
+    "line": 351,
+    "expression": "'p6_release_pose_error'",
+    "condition": "np.linalg.norm(actual[:3, 3] - target[:3, 3]) > 0.015",
+    "reason": "p6_release_pose_error"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "p6.py",
+    "function": "update",
+    "error_type": "UnsafePolicyState",
+    "line": 358,
+    "expression": "'p6_close_before_jaw_open'",
+    "condition": "q[6] < 0.04",
+    "reason": "p6_close_before_jaw_open"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "planner.py",
+    "function": "plan_fixed",
+    "error_type": "PlanningError",
+    "line": 31,
+    "expression": "arm + ':initial_joint_limits'",
+    "condition": "((current[sl] < kin[arm].limits[:, 0] - 0.0001) | (current[sl] > kin[arm].limits[:, 1] + 0.0001)).any()",
+    "reason": "left_arm:initial_joint_limits"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "planner.py",
+    "function": "plan_fixed",
+    "error_type": "PlanningError",
+    "line": 80,
+    "expression": "sequence[0][0] + ':contact_route:' + str(exc)",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "pregrasp:contact_route:ik_or_margin"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 93,
+    "expression": "name + ':branch_join'",
+    "condition": "straight and np.max(abs(path[0] - current[sl])) > 0.01",
+    "reason": "stage:branch_join"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 103,
+    "expression": "name + ':cartesian_residual'",
+    "condition": "np.linalg.norm(kin[arm].fk(a[:, sl])[:, :3, 3] - expected, axis=1).max() > 0.0005",
+    "reason": "stage:cartesian_residual"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 105,
+    "expression": "name + ':angular_residual'",
+    "condition": "twist and arm == 'right_arm' and (Rotation.from_matrix(kin[arm].fk(a[:, sl])[:, :3, :3] @ poses[-1, :3, :3].T).magnitude().max() > np.deg2rad(0.25))",
+    "reason": "stage:angular_residual"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 118,
+    "expression": "name + ':retiming_failed'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "stage:retiming_failed"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 121,
+    "expression": "name + ':step_budget'",
+    "condition": "start + n > max_steps",
+    "reason": "stage:step_budget"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "planner.py",
+    "function": "plan",
+    "error_type": "PlanningError",
+    "line": 171,
+    "expression": "'all_candidates_failed'",
+    "condition": "not feasible",
+    "reason": "all_candidates_failed"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "refinement.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 23,
+    "expression": "name + ':rotation_must_finish_above_drawer'",
+    "condition": "Rotation.from_matrix(start[:3, :3] @ target[:3, :3].T).magnitude() > np.deg2rad(0.25)",
+    "reason": "stage:rotation_must_finish_above_drawer"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "refinement.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 29,
+    "expression": "name + ':branch_join'",
+    "condition": "abs(path[0] - self.current[:6]).max() > 0.01",
+    "reason": "stage:branch_join"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "refinement.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 41,
+    "expression": "name + ':cartesian_residual'",
+    "condition": "np.linalg.norm(actual[:, :3, 3] - expected, axis=1).max() > 0.0005",
+    "reason": "stage:cartesian_residual"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "refinement.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 43,
+    "expression": "name + ':angular_residual'",
+    "condition": "Rotation.from_matrix(actual[:, :3, :3] @ target[:3, :3].T).magnitude().max() > np.deg2rad(0.25)",
+    "reason": "stage:angular_residual"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "refinement.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 54,
+    "expression": "name + ':retiming_failed'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "stage:retiming_failed"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "refinement.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 57,
+    "expression": "name + ':joint_margin'",
+    "condition": "margin < np.deg2rad(2)",
+    "reason": "stage:joint_margin"
+  },
+  {
+    "task": "drawer_open_place",
+    "file": "refinement.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 63,
+    "expression": "name + ':step_budget'",
+    "condition": "offset + n > self.budget",
+    "reason": "stage:step_budget"
+  },
+  {
+    "task": "sample_loading",
+    "file": "calibrated_planner.py",
+    "function": "plan",
+    "error_type": "PlanningError",
+    "line": 40,
+    "expression": "'no_calibrated_plan'",
+    "condition": "attempts >= max_candidates",
+    "reason": "no_calibrated_plan"
+  },
+  {
+    "task": "sample_loading",
+    "file": "calibrated_planner.py",
+    "function": "plan",
+    "error_type": "PlanningError",
+    "line": 41,
+    "expression": "'no_calibrated_plan'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "no_calibrated_plan"
+  },
+  {
+    "task": "sample_loading",
+    "file": "deploy_policy.py",
+    "function": "make_plan",
+    "error_type": "PlanningError",
+    "line": 112,
+    "expression": "'Planner produced no command'",
+    "condition": "len(actions) == 0",
+    "reason": "Planner produced no command"
+  },
+  {
+    "task": "sample_loading",
+    "file": "deploy_policy.py",
+    "function": "make_plan",
+    "error_type": "PlanningError",
+    "line": 114,
+    "expression": "'Action plan exceeds episode budget'",
+    "condition": "len(actions) > self.max_steps",
+    "reason": "Action plan exceeds episode budget"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "audit_commands",
+    "error_type": "PlanningError",
+    "line": 12,
+    "expression": "'invalid_actions'",
+    "condition": "actions.ndim != 2 or actions.shape[1] != 14 or (not len(actions)) or (not np.isfinite(actions).all())",
+    "reason": "invalid_actions"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "audit_commands",
+    "error_type": "PlanningError",
+    "line": 14,
+    "expression": "'jaw_range'",
+    "condition": "((actions[:, [6, 13]] < -1e-08) | (actions[:, [6, 13]] > 0.05 + 1e-08)).any()",
+    "reason": "jaw_range"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "audit_commands",
+    "error_type": "PlanningError",
+    "line": 20,
+    "expression": "'joint_margin'",
+    "condition": "margin < np.deg2rad(2) - 1e-06",
+    "reason": "joint_margin"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "audit_commands",
+    "error_type": "PlanningError",
+    "line": 27,
+    "expression": "'command_dynamics'",
+    "condition": "(abs(velocity) > k.velocity + 0.0001).any() or abs(acceleration).max() > 20.0001",
+    "reason": "command_dynamics"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "primitive",
+    "error_type": "PlanningError",
+    "line": 43,
+    "expression": "'branch_join'",
+    "condition": "np.max(abs(path[0] - start[:6])) > 0.001",
+    "reason": "branch_join"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "primitive",
+    "error_type": "PlanningError",
+    "line": 67,
+    "expression": "'dense_fk_residual'",
+    "condition": "p_error > 0.0005 or r_error > np.deg2rad(0.25)",
+    "reason": "dense_fk_residual"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "primitive",
+    "error_type": "PlanningError",
+    "line": 69,
+    "expression": "'retimed_budget'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "retimed_budget"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "enqueue_budget",
+    "error_type": "PlanningError",
+    "line": 75,
+    "expression": "'finish_reserve'",
+    "condition": "step < 0 or len(actions) < 1 or step + len(actions) + reserve > 1000",
+    "reason": "finish_reserve"
+  },
+  {
+    "task": "sample_loading",
+    "file": "insertion_motion.py",
+    "function": "enqueue_budget",
+    "error_type": "PlanningError",
+    "line": 77,
+    "expression": "'search_deadline'",
+    "condition": "search and step + len(actions) > 800",
+    "reason": "search_deadline"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "branch_path",
+    "error_type": "PlanningError",
+    "line": 47,
+    "expression": "'ik_or_margin'",
+    "condition": "not valid.any(1).all()",
+    "reason": "ik_or_margin"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "branch_path",
+    "error_type": "PlanningError",
+    "line": 56,
+    "expression": "'ik_branch_discontinuity'",
+    "condition": "not np.isfinite(costs).any()",
+    "reason": "ik_branch_discontinuity"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "branch_path",
+    "error_type": "PlanningError",
+    "line": 64,
+    "expression": "'fk_residual'",
+    "condition": "pos.max() > 0.0005 or ang.max() > np.deg2rad(0.25)",
+    "reason": "fk_residual"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan_candidate",
+    "error_type": "PlanningError",
+    "line": 95,
+    "expression": "'right_keypoints:' + str(exc) + ':' + ','.join(failed)",
+    "condition": "right_keys",
+    "reason": "right_keypoints:ik_or_margin:w1"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan_candidate",
+    "error_type": "PlanningError",
+    "line": 102,
+    "expression": "'left_keypoints:' + str(exc) + ':' + ','.join(failed)",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "left_keypoints:ik_or_margin:w1"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan_candidate",
+    "error_type": "PlanningError",
+    "line": 125,
+    "expression": "name + ':' + str(exc)",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "stage:ik_or_margin"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan_candidate",
+    "error_type": "PlanningError",
+    "line": 127,
+    "expression": "name + ':branch_join'",
+    "condition": "np.max(abs(path[0] - seed)) > 0.01",
+    "reason": "stage:branch_join"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "search_cart",
+    "error_type": "PlanningError",
+    "line": 145,
+    "expression": "name + ':branch_join'",
+    "condition": "np.max(abs(path[0] - current_q)) > 0.01",
+    "reason": "stage:branch_join"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 224,
+    "expression": "'insertion_time_budget'",
+    "condition": "times[-1] > n * dt",
+    "reason": "insertion_time_budget"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 234,
+    "expression": "name + ':cartesian_path_error'",
+    "condition": "np.linalg.norm(fk[:, :3, 3] - target, axis=1).max() > 0.0005",
+    "reason": "stage:cartesian_path_error"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 235,
+    "expression": "name + ':end_branch_join'",
+    "condition": "np.max(abs(actions[-1, sl] - end)) > 0.01",
+    "reason": "stage:end_branch_join"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 247,
+    "expression": "name + ':retiming_failed'",
+    "condition": "_retime >= 4",
+    "reason": "stage:retiming_failed"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "append",
+    "error_type": "PlanningError",
+    "line": 250,
+    "expression": "'left_transport:shared_time_budget'",
+    "condition": "name == 'left_transport' and transport_steps in (80, 120) and (n > transport_steps)",
+    "reason": "left_transport:shared_time_budget"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan_candidate",
+    "error_type": "PlanningError",
+    "line": 284,
+    "expression": "'invalid_action_budget_700'",
+    "condition": "len(actions) > min(max_steps, 700) or not np.isfinite(actions).all()",
+    "reason": "invalid_action_budget_700"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan_candidate",
+    "error_type": "PlanningError",
+    "line": 288,
+    "expression": "'joint_limits'",
+    "condition": "((actions[:, sl] < kin[arm].limits[:, 0] - 1e-05) | (actions[:, sl] > kin[arm].limits[:, 1] + 1e-05)).any()",
+    "reason": "joint_limits"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan_candidate",
+    "error_type": "PlanningError",
+    "line": 291,
+    "expression": "arm + ':velocity_budget'",
+    "condition": "(vmax > kin[arm].velocity + 0.0001).any()",
+    "reason": "left_arm:velocity_budget"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan_candidate",
+    "error_type": "PlanningError",
+    "line": 292,
+    "expression": "arm + ':acceleration_budget'",
+    "condition": "abs(acc).max() > 20.0001",
+    "reason": "left_arm:acceleration_budget"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "_plan_grid",
+    "error_type": "PlanningError",
+    "line": 320,
+    "expression": "'no_complete_plan'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "no_complete_plan"
+  },
+  {
+    "task": "sample_loading",
+    "file": "planner.py",
+    "function": "plan",
+    "error_type": "PlanningError",
+    "line": 340,
+    "expression": "'no_complete_plan'",
+    "condition": "candidate or retiming loop exhausted / propagated rejection",
+    "reason": "no_complete_plan"
+  }
+]

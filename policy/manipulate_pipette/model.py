@@ -2,6 +2,7 @@ from .planning import MotionGenerator
 from collections import deque
 from copy import deepcopy
 import os
+from ..episode_failure import PlanningInfeasible
 import numpy as np
 import torch
 from torch import nn
@@ -219,7 +220,7 @@ class ParaPred(nn.Module):
                 if ok and qpos is not None and np.isfinite(qpos).all():
                     solutions.append(np.asarray(qpos,dtype=np.float32))
             if not solutions:
-                print(f"ParaPred warning: unreachable {part} waypoint {pose[:3,3].tolist()} after {len(seeds)} attempts; holding last valid target",flush=True)
+                print(f"ParaPred warning: unreachable {part} waypoint {pose[:3,3].tolist()} after {len(seeds)} attempts",flush=True)
                 return seed,False
             return min(solutions,key=lambda value:float(np.linalg.norm(value-seed))),True
         def move(part,target,steps):
@@ -410,6 +411,8 @@ class ParaPred(nn.Module):
         lq_retreat,ok_lretreat=solve("left_arm",left_retreat_pose,press_search_q[-1][0])
         feasibility=(ok_rpre,ok_rgrasp,ok_rup,ok_rbpre,ok_rb,ok_lready,ok_lpress,*press_search_ok,ok_lretreat)
         print(f"ParaPred manipulate-pipette IK feasibility={feasibility}",flush=True)
+        if not all(feasibility):
+            raise PlanningInfeasible(f"manipulate_pipette waypoint IK infeasible: {feasibility}")
 
         # Exactly 500 actions: reach, grasp-and-settle, lift, move above beaker,
         # left-button approach, press-and-hold, then collision-free retreat.

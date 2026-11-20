@@ -1,4 +1,5 @@
 """Official get_model/eval/reset_model interface; env is used only for step()."""
+from ..episode_failure import NonFinitePlan, PerceptionInsufficient, end_episode
 import time
 import hashlib
 from pathlib import Path
@@ -9,9 +10,8 @@ from .model import DrawerPerception
 from .observation import encode_obs
 from .kinematics import build_kinematics, physical_qpos
 from .planner import plan
-from .close_tail import append_close_tail
-from .refinement import refine, retreat, Suffix
-from .motion import PlanningError
+from .refinement import refine, retreat
+from .motion import PlanningError, UnsafePolicyState
 from .clearance import check as check_clearance
 
 
@@ -38,6 +38,7 @@ class Policy:
         self.result, self.parameters, self.cursor, self.done = None,None,0,False
         self.replanned = False
         self.gates = {}
+        self.episode_failure = None
         self.execution_failure = None
         self.p6_history = []
         self.last_action, self.last_stage = None, None
@@ -92,7 +93,7 @@ def update_suffix(model, obs):
     state['consecutive'] = state['consecutive']+1 if ok else 0
     if state['consecutive'] >= 5:return
     if state['waited'] >= (5 if placement_gate else 20):
-        raise PlanningError(stage+':actual_tracking_or_clearance_timeout',dict(joint_error_deg=error))
+        raise UnsafePolicyState(stage+':actual_tracking_or_clearance_timeout',dict(joint_error_deg=error))
     hold_one(model);state['waited'] += 1
 
 
@@ -123,45 +124,42 @@ def reset_model(model, **kwargs):
 
 def eval(env, model, obs):
     """One physical action per call; planner exceptions remain explicit failures."""
-    if model.done or model.cursor >= model.max_steps:
+    if model.episode_failure or model.done or model.cursor >= model.max_steps:
         raise RuntimeError('Reset required')
     if model.device.type == 'cuda': torch.cuda.synchronize(model.device)
     start = time.perf_counter()
-    if model.result is None:
-        images,qpos = encode_obs(obs,model.device)
-        with torch.inference_mode():
-            model.parameters = model.predict_parameters(images,qpos)['parameters']
-        model.result = plan(model.parameters,model.kin,physical_qpos(obs),model.max_steps,model.pull_distance,timing=model.timing)
-        if model.close_enabled:
-            try:
-                model.result = refine(model.result,model.parameters,model.kin,model.config)
-            except PlanningError:
-                if model.config.get('p5_mode')!='p6':raise
-                from .p6 import initial_grasp
-                model.result=initial_grasp(model.result,model.parameters,model.kin,model.config,physical_qpos(obs),model.max_steps)
     try:
-        update_suffix(model,obs)
-    except PlanningError as exc:
-        if model.config.get('p5_mode')=='p6':
-            from .p6 import escape
-            escape(model,physical_qpos(obs,contact=True),exc)
-        else:
-            model.execution_failure = dict(step=model.cursor+1,reason=str(exc),diagnostics=exc.diagnostics)
-            try:
-                suffix=Suffix(model.result,model.cursor,model.kin,model.max_steps)
-                suffix.append('execution_failure_unload',20,joint=physical_qpos(obs,contact=True)[:6])
-                model.result=suffix.finish()
-                model.result['close_start_step']=1001
-            except PlanningError as unload_error:
-                model.execution_failure['unload_error']=str(unload_error)
-                model.result['actions']=model.result['actions'][:model.cursor].copy()
-    action = model.result['actions'][min(model.cursor,len(model.result['actions'])-1)]
+        if model.result is None:
+            images,qpos = encode_obs(obs,model.device)
+            with torch.inference_mode():
+                model.parameters = model.predict_parameters(images,qpos)['parameters']
+            if model.parameters.shape == (9,) and not np.isfinite(model.parameters).all():
+                return end_episode(model, obs, start, PerceptionInsufficient('Nonfinite drawer estimates'), 'perception_insufficient')
+            model.result = plan(model.parameters,model.kin,physical_qpos(obs),model.max_steps,model.pull_distance,timing=model.timing)
+            if model.close_enabled:
+                try:
+                    model.result = refine(model.result,model.parameters,model.kin,model.config)
+                except PlanningError:
+                    if model.config.get('p5_mode')!='p6':raise
+                    from .p6 import initial_grasp
+                    model.result=initial_grasp(model.result,model.parameters,model.kin,model.config,physical_qpos(obs),model.max_steps)
+        update_suffix(model, obs)
+    except UnsafePolicyState as error:
+        return end_episode(model, obs, start, error, 'unsafe_policy_state')
+    except PlanningError as error:
+        return end_episode(model, obs, start, error)
+    actions = model.result['actions']
+    if actions.ndim != 2 or actions.shape[1] != 14:
+        raise ValueError('Invalid action plan')
+    if len(actions) == 0:
+        return end_episode(model, obs, start, PlanningError('Planner produced no command'))
+    action = actions[min(model.cursor, len(actions)-1)]
     stage = next((s['name'] for s in model.result['stages'] if s['start']<=model.cursor<s['start']+s['steps']),'terminal_hold')
-    if model.execution_failure and model.config.get('p5_mode')!='p6':
-        if stage != 'execution_failure_unload':stage = 'execution_failure_hold'
     command=torch.as_tensor(action[None],dtype=torch.float32,device=model.action_device)
-    if command.shape != (1, 14) or not torch.isfinite(command).all():
+    if command.shape != (1, 14):
         raise ValueError('Joint command must be finite [1,14]')
+    if not torch.isfinite(command).all():
+        return end_episode(model, obs, start, NonFinitePlan('Nonfinite joint command'), 'non_finite_plan')
     model.last_action,model.last_stage = command.detach().cpu().numpy()[0].copy(),stage
     if model.device.type == 'cuda': torch.cuda.synchronize(model.device)
     timings = [time.perf_counter()-start]

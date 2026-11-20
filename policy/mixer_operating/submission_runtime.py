@@ -7,6 +7,7 @@ Planning uses a private context built from obs and static policy assets.
 import hashlib
 from pathlib import Path
 import time
+from ..episode_failure import PlanningInfeasible, NonFinitePlan, PerceptionInsufficient, end_episode, validate_prediction
 import numpy as np
 import torch
 
@@ -74,6 +75,8 @@ code. The evaluator checks task success separately; termination is not timeout.
 Never queries hidden success/scene state
 in this transport adapter. The SDK/evaluator owns execution timing.
 """
+    if getattr(model, "episode_failure", None) is not None:
+        raise RuntimeError("Episode ended; reset_model is required")
     if model._submission_steps >= model._submission_budget:
         raise RuntimeError('Episode command budget exhausted; reset_model is required')
     if str(model.device).startswith('cuda'):
@@ -86,7 +89,16 @@ in this transport adapter. The SDK/evaluator owns execution timing.
             model.update_observation_window(images, state)
             from .planning import PlanningContext
             context = PlanningContext(model._submission_task, model._planning_robot, state)
-            model.plan_trajectory(context, model.predict_parameters(images, state))
+            prediction = model.predict_parameters(images, state)
+            try:
+                validate_prediction(prediction)
+                model.plan_trajectory(context, prediction)
+            except PerceptionInsufficient as error:
+                return end_episode(model, obs, started, error, 'perception_insufficient')
+            except PlanningInfeasible as error:
+                return end_episode(model, obs, started, error)
+            except NonFinitePlan as error:
+                return end_episode(model, obs, started, error, 'non_finite_plan')
         if model.has_pending_actions():
             actions = np.asarray(model.get_action(count=1), dtype=np.float32)
             if actions.shape != (1,14):
@@ -94,10 +106,12 @@ in this transport adapter. The SDK/evaluator owns execution timing.
             action = actions[0]
         else:
             if model._last_action is None:
-                raise RuntimeError('Planner produced no command')
+                return end_episode(model, obs, started, PlanningInfeasible('Planner produced no command'))
             action = np.asarray(model._last_action, dtype=np.float32)
-        if action.shape != (14,) or not np.isfinite(action).all():
-            raise ValueError('Joint command must be finite [14]')
+        if action.shape != (14,):
+            raise ValueError('Joint command must have shape [14]')
+        if not np.isfinite(action).all():
+            return end_episode(model, obs, started, NonFinitePlan('Nonfinite joint command'), 'non_finite_plan')
         command = torch.as_tensor(action, device=model._action_device).unsqueeze(0)
     if str(model.device).startswith('cuda'):
         torch.cuda.synchronize(model.device)
@@ -109,4 +123,5 @@ in this transport adapter. The SDK/evaluator owns execution timing.
 def reset_model(model, seed=None, **kwargs):
     """Start a new episode with empty trajectory and a fresh command counter."""
     model.reset()
+    model.episode_failure = None
     model._submission_steps = 0

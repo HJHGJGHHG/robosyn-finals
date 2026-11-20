@@ -9,6 +9,10 @@ class PlanningError(RuntimeError):
         super().__init__(message)
         self.diagnostics = diagnostics or {}
 
+class UnsafePolicyState(PlanningError):
+    """Measured feedback invalidates the next command."""
+
+
 @dataclass
 class Kinematics:
     solver: object

@@ -1,5 +1,6 @@
 from .planning import MotionGenerator
 from collections import deque
+from ..episode_failure import PlanningInfeasible
 import numpy as np
 import torch
 from torch import nn
@@ -203,7 +204,7 @@ class ParaPred(nn.Module):
         lq_align = np.array([-.7503578, 1.9010533, -1.4435098, 1.7379255, 1.1659968, -.4047130], np.float32)
         lq_get = np.array([-.8100434, 2.1020808, -1.7696371, 1.6664896, 1.2061079, -.2628981], np.float32)
         feasible = (ok1, ok2, ok3, ok4, ok5, ok6)
-        if not all(feasible): raise RuntimeError(f"ParaPred item_assembly grasp IK infeasible: {feasible}")
+        if not all(feasible): raise PlanningInfeasible(f"ParaPred item_assembly grasp IK infeasible: {feasible}")
         # 300 frames: predicted grasp, secure hold, safe lift, canonical assembly, settle/release.
         move("right_arm", rq_pre, 15); move("left_arm", lq_pre, 15)
         move("right_arm", rq_grasp, 15); grip("right_arm", 0., 15, 5)
